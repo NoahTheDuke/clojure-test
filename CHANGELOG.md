@@ -8,6 +8,7 @@ Only accretive/fixative changes will be made from now on.
 
 * 2.1.next in progress
   * Address [#31](https://github.com/clojure-expectations/clojure-test/issues/31) by adding more examples to `more-of`.
+  * Update dev/test dependencies.
 
 * 2.1.188 -- 2023-10-22
   * Address [#29](https://github.com/clojure-expectations/clojure-test/issues/29) by providing a "hook" for `more-of`.
