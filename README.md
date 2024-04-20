@@ -17,9 +17,43 @@ clj -Sdeps '{:deps {com.github.seancorfield/expectations {:mvn/version "RELEASE"
 
 ## What?
 
-This library brings `expect`, `more`, `more-of`, etc from Expectations into the
-`clojure.test` world to be used instead of (or in addition to) the familiar `is`
-macro. This library has no dependencies, other than `clojure.test` itself, and
+This library provides a more expressive way to write tests than `clojure.test`,
+while still being fully compatible with `clojure.test` and all its tooling.
+
+While `clojure.test` provides basic assertions using `(is (= ... ...))`
+and `(is (thrown? ... ...))`, Expectations additionally supports predicates,
+regular expressions, Specs, and collection-based tests.
+
+You can either "mix'n'match" `clojure.test` and `expectations.clojure.test`
+features in your tests, using `deftest` from `clojure.test` or `defexpect` from
+this library to wrap your tests, or you can use `expectations.clojure.test` on
+its own, since it exposes equivalents to all of the top-level `clojure.test`
+functions and macros for dealing with fixtures and running tests.
+
+The following are equivalent:
+
+```clojure
+(deftest my-test-1
+  (is (= 2 (+ 1 1)))
+  (is (thrown? ArithmeticException (/ 1 0))))
+
+(defexpect my-test-2
+  (expect 2 (+ 1 1))
+  (expect ArithmeticException (/ 1 0)))
+```
+
+But you can also do things like:
+
+```clojure
+(defexpect my-test-3
+  (expect even? (+ 1 1))
+  (expect #"foo" "It's foobar!")
+  (expect ::adult-age 42)) ; ::adult-age is a Spec
+```
+
+See the example REPL session below for more details.
+
+This library has no dependencies, other than `clojure.test` itself, and
 should be compatible with all existing `clojure.test`-based tooling in editors
 and command-line tools.
 
@@ -28,9 +62,6 @@ Works with Clojure 1.9 and later.
 Works in self-hosted ClojureScript (specifically,
 [`planck`](https://planck-repl.org)).  See
 [Getting Started with ClojureScript](/doc/getting-started-cljs.md) for details.
-
-You can either use `deftest` from `clojure.test`, or `defexpect` from
-this library to wrap your tests.
 
 ## Example REPL Session
 
@@ -78,7 +109,7 @@ What follows is an example REPL session showing some of what this library provid
 
 (defexpect named String (name :foo))
 
-;; the expected outcome can be a Spec (require Clojure 1.9 or later):
+;; the expected outcome can be a Spec:
 
 (s/def ::value (s/and pos-int? #(< % 100)))
 (defexpect small-value
@@ -164,36 +195,27 @@ expected: (=? even? (+ 1 1 1))
 nil
 ```
 
-## Compatibility with Expectations
-
-`expectations.clojure.test` supports the following features from Expectations so far:
-
-* simple equality test
-* simple predicate test
-* spec test (using a keyword that identifies a spec)
-* class test -- see `named` above
-* exception test -- see `divide-by-zero` above
-* regex test -- see `regex-1` and `regex-2` above
-* `(expect expected-expr (from-each [a values] (actual-expr a)))`
-* `(expect expected-expr (in actual-expr))` -- see `collections` above
-* `(expect (more-of destructuring e1 a1 e2 a2 ...) actual-expr)`
-* `(expect (more-> e1 a1 e2 a2 ...) actual-expr)` -- where `actual-expr` is threaded into each `a1`, `a2`, ... expression
-* `(expect (more e1 e2 ...) actual-expr)`
-* `(expect expected-expr (side-effects [fn1 fn2 ...] actual-expr))`
-
-Read [the Expectations documentation](https://clojure-expectations.github.io/)
-for more details of these features.
-
 ## Why?
+
+TL;DR: Because I liked the ["Classic" Expectations library](https://clojure-expectations.github.io) but didn't like having to use custom, Expectations-specific tooling.
+
+### Why not just use `clojure.test`?
+
+`clojure.test` is a great library for writing tests in Clojure. It's simple,
+it's built-in, and it's widely supported by the Clojure ecosystem. However, it
+only provides basic assertions and doesn't support some of the more advanced
+testing features that Expectations does.
+
+### Why not just use the "Classic" Expectations library?
 
 Given the streamlined simplicity of Expectations, you might wonder why you
 would want to migrate your Expectations test suite to `clojure.test`-style
 named tests? The short answer is **tooling**! Whilst Expectations has
 well-maintained, stable plugins for Leiningen and Boot, as well as an Emacs mode,
 the reality is that Clojure tooling is constantly evolving and most of those
-tools -- such as the excellent [CIDER](https://cider.readthedocs.io/en/latest/),
+tools -- such as the excellent [CIDER](https://docs.cider.mx/),
 [Cursive](https://cursive-ide.com/),
-[Chlorine](https://atom.io/packages/chlorine) (for Atom),
+[Calva](https://calva.io/) (for VS Code),
 and [Cognitect's `test-runner`](https://github.com/cognitect-labs/test-runner) --
 are going to focus on Clojure's built-in testing library first.
 Support for the original form of Expectations, using unnamed tests, is
@@ -214,7 +236,27 @@ macro). Whilst this goes against the [Test Names
 philosophy](https://clojure-expectations.github.io/odds-ends.html) that Expectations was created with, it buys us a lot in terms of
 tooling support!
 
-## Differences from Expectations
+## Compatibility with "Classic" Expectations
+
+`expectations.clojure.test` supports the following features from the "Classic" Expectations library so far:
+
+* simple equality test
+* simple predicate test
+* spec test (using a keyword that identifies a spec)
+* class test -- see `named` above
+* exception test -- see `divide-by-zero` above
+* regex test -- see `regex-1` and `regex-2` above
+* `(expect expected-expr (from-each [a values] (actual-expr a)))`
+* `(expect expected-expr (in actual-expr))` -- see `collections` above
+* `(expect (more-of destructuring e1 a1 e2 a2 ...) actual-expr)`
+* `(expect (more-> e1 a1 e2 a2 ...) actual-expr)` -- where `actual-expr` is threaded into each `a1`, `a2`, ... expression
+* `(expect (more e1 e2 ...) actual-expr)`
+* `(expect expected-expr (side-effects [fn1 fn2 ...] actual-expr))`
+
+Read [the Expectations documentation](https://clojure-expectations.github.io/)
+for more details of these features.
+
+## Differences from "Classic" Expectations
 
 Aside from the obvious difference of providing names for tests -- essential for
 compatibility with `clojure.test`-based tooling -- here are the other differences
@@ -235,7 +277,7 @@ To test, run `clj -X:test` (tests against Clojure 1.9).
 Multi-version testing:
 
 ```
-for v in 1.9 1.10
+for v in 1.9 1.10 1.11 1.12
 do
   clojure -X:test:$v
 done
@@ -244,7 +286,7 @@ done
 You can also run the tests with Humane Test Output enabled but you need to exclude the negative tests because they assume things about the test report data that HTO modifies:
 
 ```
-for v in 1.9 1.10
+for v in 1.9 1.10 1.11 1.12
 do
   clojure -X:test:$v:humane :excludes '[:negative]'
 done
@@ -292,6 +334,6 @@ This will set you up with `defexpect` and `expect`.  Add others as required.
 
 ## License & Copyright
 
-Copyright © 2018-2023 Sean Corfield, all rights reserved.
+Copyright © 2018-2024 Sean Corfield, all rights reserved.
 
 Distributed under the Eclipse Public License version 1.0.
