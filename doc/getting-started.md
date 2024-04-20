@@ -74,7 +74,7 @@ How you run tests will depend a lot on the tooling and/or IDE/editor that you us
 
 ### Editor Integration
 
-While you are developing tests, it's probably best to run them via your editor (using the REPL connected to it). Most Clojure integrations for editors allow you run an individual test, all tests in a given namespace, or all tests in the project. You'll have to consult the documentation for your chosen editor/integration for the ways to do that. _[In Chlorine for Atom, it's `ctrl-; t` to run a single test and `ctrl-; x` to run all the tests in the current namespace.]_
+While you are developing tests, it's probably best to run them via your editor (using the REPL connected to it). Most Clojure integrations for editors allow you run an individual test, all tests in a given namespace, or all tests in the project. You'll have to consult the documentation for your chosen editor/integration for the ways to do that.
 
 ### REPL
 
