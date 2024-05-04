@@ -1,4 +1,4 @@
-;; copyright (c) 2019-2023 sean corfield, all rights reserved
+;; copyright (c) 2019-2024 sean corfield, all rights reserved
 
 (ns expectations.clojure.test-test
   "Test the testing framework -- this is sometimes harder than you might think!
@@ -126,19 +126,19 @@
   (is-not' (sut/expect {:foo 1} (in {:foo 2 :cat 4})) (not= {:foo 1} {:foo 2}))
 
 ;; TODO: need better tests here
-  (deftest grouping-more-more-of-from-each
-    (sut/expecting "numeric behavior"
-      (sut/expect (more-of {:keys [a b]}
-                           even? a
-                           odd?  b)
-                  {:a (* 2 13) :b (* 3 13)})
-      (sut/expect pos? (* -3 -5)))
-    (sut/expecting "string behavior"
-      (sut/expect (more #"foo" "foobar" #(str/starts-with? % "f"))
-                  (str "f" "oobar"))
-      (sut/expect #"foo"
-                  (from-each [s ["l" "d" "bar"]]
-                             (str "foo" s))))))
+(deftest grouping-more-more-of-from-each
+  (sut/expecting "numeric behavior"
+    (sut/expect (more-of {:keys [a b]}
+                         even? a
+                         odd?  b)
+                {:a (* 2 13) :b (* 3 13)})
+    (sut/expect pos? (* -3 -5)))
+  (sut/expecting "string behavior"
+    (sut/expect (more #"foo" "foobar" #(str/starts-with? % "f"))
+                (str "f" "oobar"))
+    (sut/expect #"foo"
+                (from-each [s ["l" "d" "bar"]]
+                           (str "foo" s))))))
 
 (deftest more-evals-once
   (let [counter (atom 1)]

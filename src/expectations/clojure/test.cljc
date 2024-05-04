@@ -1,4 +1,4 @@
-;; copyright (c) 2018-2023 sean corfield, all rights reserved
+;; copyright (c) 2018-2024 sean corfield, all rights reserved
 
 (ns expectations.clojure.test
   "This namespace provides compatibility with `clojure.test` and related tooling.
@@ -424,7 +424,7 @@
   [e]
   (when (and (coll? e) (not (vector? e)))
     (or (and (symbol? (first e))
-             (= "expect" (name (first e))))
+             (str/starts-with? (name (first e)) "expect"))
         (some contains-expect? e))))
 
 (defmacro defexpect
