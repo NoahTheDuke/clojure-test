@@ -6,6 +6,9 @@
 
 Only accretive/fixative changes will be made from now on.
 
+* 2.1.next in progress
+  * Expose `run-test` and `run-test-var` from `clojure.test` (Clojure 1.11).
+
 * 2.1.201 --2024-05-07
   * Address [#35](https://github.com/clojure-expectations/clojure-test/issues/35) by treating any symbol starting with `expect` as an Expectations macro for the 2-argument form.
   * Address [#33](https://github.com/clojure-expectations/clojure-test/issues/33) by expanding the README introduction.

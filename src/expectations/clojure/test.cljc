@@ -550,26 +550,29 @@
   "Intern the specified symbol from `clojure.test` as a symbol in
   `expectations.clojure.test` with the same value and metadata."
   [f]
-  (let [tf (symbol #?(:clj "clojure.test"
-                      :cljs "cljs.test")
-                   (name f))
-        v (#?(:clj resolve
-              :cljs planck.core/find-var)
-           tf)
-        m (meta v)]
-    (#?(:clj intern
-        :cljs planck.core/intern)
-     'expectations.clojure.test
-     (with-meta f
-       (update m
-               :doc
-               str
-               (str #?(:clj "\n\nImported from clojure.test."
-                       :cljs "\n\nImported from cljs.test"))))
-     (deref v))))
+  (try
+    (let [tf (symbol #?(:clj "clojure.test"
+                        :cljs "cljs.test")
+                     (name f))
+          v (#?(:clj resolve
+                :cljs planck.core/find-var)
+             tf)
+          m (meta v)]
+      (#?(:clj intern
+          :cljs planck.core/intern)
+       'expectations.clojure.test
+       (with-meta f
+         (update m
+                 :doc
+                 str
+                 (str #?(:clj "\n\nImported from clojure.test."
+                         :cljs "\n\nImported from cljs.test"))))
+       (deref v)))
+    (catch #?(:clj Throwable
+              :cljs :default) _)))
 
 
 ;; bring over other useful clojure.test functions:
-(doseq [f '[#?@(:clj [run-all-tests run-tests test-all-vars test-ns with-test])
-            test-var test-vars]]
+(doseq [f '[#?@(:clj [run-all-tests run-tests run-test-var test-all-vars test-ns with-test])
+            run-test test-var test-vars]]
   (from-clojure-test f))
