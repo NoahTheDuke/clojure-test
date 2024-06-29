@@ -71,6 +71,27 @@ so `my-code` executes the non-truthy path.
 In `my-code-test-2`, we mock `my-pred` to return `true` and so `my-code` executes
 the truthy path and we can verify that calls `println` as expected.
 
+The `side-effects` macro is deliberately simple: it focuses on the arguments
+passed to the mock -- and that is what it returns -- but only allows for a
+single return value (either `nil` or the specified value), even if there are
+multiple calls to the mocked function. The return value is fixed for all calls,
+and does not depend on the arguments passed to the mock. If you need more
+complex behavior in a mock, you can use `with-redefs` or similar, and write
+your own argument capturing logic, if needed.
+
+For comparison, the following `side-effects` call and the `with-redefs` code
+have the same effect:
+
+```clojure
+(side-effects [[my-pred true] println] (my-code 42))
+;; is equivalent to:
+(let [calls (atom [])]
+  (with-redefs [my-pred (fn [& args] (swap! calls conj args) true)
+                println (fn [& args] (swap! calls conj args) nil)]
+    (my-code 42)
+    @calls))
+```
+
 Because `side-effects` can return multiple results, and each result is a sequence
 of values, it often helps to combine `side-effects` with `more-of`:
 
