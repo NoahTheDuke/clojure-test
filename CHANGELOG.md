@@ -9,6 +9,7 @@ Only accretive/fixative changes will be made from now on.
 * 2.1.next in progress
   * Address [#36](https://github.com/clojure-expectations/clojure-test/issues/36) by expanding `side-effects` documentation, and mentioning `with-redefs`.
   * Expose `run-test` and `run-test-var` from `clojure.test` (Clojure 1.11).
+  * Update dev/test dependencies.
 
 * 2.1.201 --2024-05-07
   * Address [#35](https://github.com/clojure-expectations/clojure-test/issues/35) by treating any symbol starting with `expect` as an Expectations macro for the 2-argument form.
