@@ -6,13 +6,13 @@
 
 Only accretive/fixative changes will be made from now on.
 
-* 2.1.next in progress
-  * Address [#39](https://github.com/clojure-expectations/clojure-test/issues/39) by ignoring qualifier on Expectations' macros. This is potentially breaking but is required for migration (to LazyTest, for example).
+* 2.1.208 -- 2024-11-21
+  * Address [#39](https://github.com/clojure-expectations/clojure-test/issues/39) by ignoring qualifier on Expectations' macros. This is potentially breaking but is often required during migration to another test framework, as you may have to use aliased names to avoid collisions (to LazyTest, for example).
   * Address [#36](https://github.com/clojure-expectations/clojure-test/issues/36) by expanding `side-effects` documentation, and mentioning `with-redefs`.
   * Expose `run-test` and `run-test-var` from `clojure.test` (Clojure 1.11).
   * Update dev/test dependencies.
 
-* 2.1.201 --2024-05-07
+* 2.1.201 -- 2024-05-07
   * Address [#35](https://github.com/clojure-expectations/clojure-test/issues/35) by treating any symbol starting with `expect` as an Expectations macro for the 2-argument form.
   * Address [#33](https://github.com/clojure-expectations/clojure-test/issues/33) by expanding the README introduction.
   * Address [#31](https://github.com/clojure-expectations/clojure-test/issues/31) by adding more examples to `more-of`.
