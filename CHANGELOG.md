@@ -7,6 +7,7 @@
 Only accretive/fixative changes will be made from now on.
 
 * 2.1.next in progress
+  * Address [#39](https://github.com/clojure-expectations/clojure-test/issues/39) by ignoring qualifier on Expectations' macros. This is potentially breaking but is required for migration (to LazyTest, for example).
   * Address [#36](https://github.com/clojure-expectations/clojure-test/issues/36) by expanding `side-effects` documentation, and mentioning `with-redefs`.
   * Expose `run-test` and `run-test-var` from `clojure.test` (Clojure 1.11).
   * Update dev/test dependencies.

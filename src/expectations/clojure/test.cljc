@@ -300,7 +300,9 @@
   ([e a] `(expect ~e ~a nil true ~e))
   ([e a msg] `(expect ~e ~a ~msg true ~e))
   ([e a msg ex? e']
-   (let [within (if (and (sequential? e') (= 'expect (first e')))
+   (let [within (if (and (sequential? e')
+                         (symbol? (first e'))
+                         (= "expect" (name (first e'))))
                   `(pr-str '~e')
                   `(pr-str (list '~'expect '~e' '~a)))
          msg' `(str/join
@@ -313,7 +315,9 @@
                   :else
                   (conj (str (pr-str '~a) "\n"))))]
      (cond
-       (and (sequential? a) (= 'from-each (first a)))
+       (and (sequential? a)
+            (symbol? (first a))
+            (= "from-each" (name (first a))))
        (let [[_ bindings & body] a]
          (if (= 1 (count body))
            `(doseq ~bindings
@@ -321,7 +325,9 @@
            `(doseq ~bindings
               (expect ~e (do ~@body) ~msg ~ex? ~e))))
 
-       (and (sequential? a) (= 'in (first a)))
+       (and (sequential? a)
+            (symbol? (first a))
+            (= "in" (name (first a))))
        (let [form `(~'expect ~e ~a)]
          `(let [e#     ~e
                 a#     ~(second a)
@@ -370,12 +376,16 @@
                   :else
                   (throw (illegal-argument "'in' requires map or sequence")))))
 
-       (and (sequential? e) (= 'more (first e)))
+       (and (sequential? e)
+            (symbol? (first e))
+            (= "more" (name (first e))))
        (let [sa (gensym)
              es (mapv (fn [e] `(expect ~e ~sa ~msg ~ex? ~e')) (rest e))]
          `(let [~sa (? ~a)] ~@es))
 
-       (and (sequential? e) (= 'more-> (first e)))
+       (and (sequential? e)
+            (symbol? (first e))
+            (= "more->" (name (first e))))
        (let [sa (gensym)
              es (mapv (fn [[e a->]]
                         (if (and (sequential? a->)
@@ -388,7 +398,9 @@
                       (partition 2 (rest e)))]
          `(let [~sa (? ~a)] ~@es))
 
-       (and (sequential? e) (= 'more-of (first e)))
+       (and (sequential? e)
+            (symbol? (first e))
+            (= "more-of" (name (first e))))
        (let [es (mapv (fn [[e a]] `(expect ~e ~a ~msg ~ex? ~e'))
                       (partition 2 (rest (rest e))))]
          `(let [~(second e) ~a] ~@es))
